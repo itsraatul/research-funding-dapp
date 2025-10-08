@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>💰 Fund Project (INR with MetaMask)</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background: #f4f6f8;
+        margin: 40px;
+      }
+      .container {
+        max-width: 750px;
+        margin: auto;
+        background: #fff;
+        padding: 30px;
+        border-radius: 12px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      }
+      h1 {
+        color: #2c3e50;
+        margin-bottom: 25px;
+      }
+      .info {
+        background: #f9f9f9;
+        padding: 15px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+      }
+      .info p {
+        margin: 6px 0;
+      }
+      label {
+        display: block;
+        margin-top: 15px;
+        font-weight: bold;
+        color: #34495e;
+      }
+      input {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 6px;
+        margin-top: 6px;
+      }
+      .conversion {
+        margin-top: 10px;
+        font-size: 14px;
+        color: #555;
+      }
+      .btn {
+        margin-top: 25px;
+        background: #2980b9;
+        color: white;
+        border: none;
+        padding: 12px 18px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 16px;
+        font-weight: bold;
+      }
+      .btn:hover {
+        background: #1f5a7d;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="container">
+      <h1>💰 Fund Project</h1>
+
+      <div class="info">
+        <p><strong>📌 Title:</strong> <%= project.title %></p>
+        <p><strong>📝 Abstract:</strong> <%= project.abstract %></p>
+        <p><strong>👨‍🎓 Student:</strong> <%= project.owner.name %></p>
+        <p><strong>Status:</strong> <%= project.status %></p>
+      </div>
+
+      <label>Total Funding (INR)</label>
+      <input
+        type="number"
+        id="totalINR"
+        step="0.01"
+        placeholder="e.g. 25000"
+        required
+      />
+      <div class="conversion" id="conversionInfo">≈ ? ETH</div>
+
+      <label>Milestone Split (percentages, comma separated)</label>
+      <input type="text" id="milestones" placeholder="e.g. 30,40,30" required />
+
+      <button class="btn" onclick="fundProject()">
+        🚀 Deploy via MetaMask
+      </button>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/ethers@6.6.0/dist/ethers.umd.min.js"></script>
+    <script>
+      let ethInrRate = 0;
+
+      async function fetchEthInrRate() {
+        try {
+          const res = await fetch(
+            "https://api.coingecko.com/api/v3/simple/price?ids=ethereum&vs_currencies=inr"
+          );
+          const data = await res.json();
+          ethInrRate = data.ethereum.inr;
+        } catch {
+          ethInrRate = 250000; // fallback rate
+        }
+      }
+
+      async function updateConversion() {
+        if (!ethInrRate) await fetchEthInrRate();
+        const inr = parseFloat(document.getElementById("totalINR").value);
+        const conversion = document.getElementById("conversionInfo");
+        if (isNaN(inr) || inr <= 0) {
+          conversion.textContent = "≈ ? ETH";
+          return;
+        }
+        const ethValue = (inr / ethInrRate).toFixed(6);
+        conversion.textContent = `≈ ${ethValue} ETH (1 ETH ≈ ₹${ethInrRate.toLocaleString()})`;
+      }
+
+      document
+        .getElementById("totalINR")
+        .addEventListener("input", updateConversion);
+
+      async function fundProject() {
+        const inrAmount = parseFloat(document.getElementById("totalINR").value);
+        const milestones = document.getElementById("milestones").value.trim();
+
+        if (!inrAmount || !milestones)
+          return alert("⚠️ Please fill all fields");
+        if (!window.ethereum) return alert("❌ Please install MetaMask first");
+
+        await fetchEthInrRate();
+        const totalEth = (inrAmount / ethInrRate).toFixed(6);
+
+        // ✅ Clean, valid addresses
+        const studentWallet = "<%= project.owner.walletAddress %>";
+        const rawUniversity = "<%= universityAddress %>";
+        const formattedUniversityWallet = rawUniversity.replace(/^0x0x/, "0x");
+
+        console.log("Deploying with:", {
+          studentWallet,
+          formattedUniversityWallet,
+          totalEth,
+        });
+
+        try {
+          const provider = new ethers.BrowserProvider(window.ethereum);
+          await provider.send("eth_requestAccounts", []);
+          const signer = await provider.getSigner();
+
+          const config = await fetch("/config/contract.json").then((r) =>
+            r.json()
+          );
+          const factory = new ethers.ContractFactory(
+            config.abi,
+            config.bytecode,
+            signer
+          );
+
+          const percents = milestones
+            .split(",")
+            .map((p) => parseFloat(p.trim()));
+          const milestoneAmounts = percents.map((p) =>
+            ethers.parseEther(((totalEth * p) / 100).toString())
+          );
+
+          // 🦊 MetaMask deployment (will open popup)
+          const escrow = await factory.deploy(
+            studentWallet,
+            formattedUniversityWallet,
+            milestoneAmounts,
+            {
+              value: ethers.parseEther(totalEth),
+            }
+          );
+
+          await escrow.waitForDeployment();
+          alert("✅ Escrow deployed at: " + escrow.target);
+
+          // ✅ Notify backend
+          const response = await fetch(
+            `/company/save-escrow/<%= project._id %>`,
+            {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ escrowAddress: escrow.target }),
+            }
+          );
+
+          if (!response.ok)
+            throw new Error("Backend rejected save-escrow request");
+          alert("✅ Project successfully funded!");
+
+          window.location.href = "/company/dashboard";
+        } catch (err) {
+          console.error("❌ Transaction failed:", err);
+          alert("❌ Transaction failed: " + err.message);
+        }
+      }
+
+      fetchEthInrRate();
+    </script>
+  </body>
+</html>

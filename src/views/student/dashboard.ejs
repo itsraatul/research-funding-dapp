@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Researcher Dashboard | ResearChain Ledger</title>
+    <!-- Google Font for clean, professional look -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Space+Mono:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+    <!-- Font Awesome for sleek icons -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    />
+    <style>
+      /* ------------------ Global Styles (ResearChain Theme) ------------------ */
+      :root {
+        --color-accent: #0077ff; /* Electric Blue (Action) */
+        --color-secondary: #00bcd4; /* Vibrant Cyan/Teal (Highlight) */
+        --color-success: #27ae60; /* Verified Green */
+        --color-funded: #0077ff; /* Funded Blue */
+        --color-pending: #f39c12; /* Pending Orange */
+        --color-rejected: #e74c3c; /* Rejected Red */
+        --color-text-primary: #171a23;
+        --color-text-secondary: #6b778d;
+        --color-bg-light: #f7f9fc;
+        --color-bg-clean: #ffffff;
+        --font-mono: "Space Mono", monospace;
+        --font-sans: "Inter", sans-serif;
+      }
+      /* ============ GLOBAL ============ */
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: var(--font-sans);
+        background-color: var(--color-bg-light);
+        color: var(--color-text-primary);
+        min-height: 100vh;
+      }
+
+      a {
+        text-decoration: none;
+        color: var(--color-accent);
+      }
+
+      /* ============ HEADER ============ */
+      header {
+        background: var(--color-bg-clean);
+        box-shadow: 0 1px 10px rgba(0, 0, 0, 0.05);
+        padding: 18px 60px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        border-bottom: 2px solid var(--color-secondary);
+      }
+
+      header h1 {
+        font-family: var(--font-mono);
+        font-size: 24px;
+        font-weight: 700;
+        color: var(--color-text-primary);
+        letter-spacing: 1px;
+      }
+      header h1 span {
+        color: var(--color-secondary);
+      }
+
+      nav a {
+        color: var(--color-text-secondary);
+        font-weight: 600;
+        margin-left: 25px;
+        transition: color 0.3s;
+      }
+
+      nav a:hover {
+        color: var(--color-accent);
+      }
+
+      /* ============ CONTAINER ============ */
+      .container {
+        max-width: 1200px;
+        margin: 40px auto;
+        padding: 0 20px 60px;
+      }
+
+      .dashboard-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 15px;
+        margin-bottom: 35px;
+        border-bottom: 1px solid #e0e0e0;
+        padding-bottom: 20px;
+      }
+
+      .dashboard-header h2 {
+        font-size: 32px;
+        font-weight: 800;
+        color: var(--color-text-primary);
+        letter-spacing: -0.5px;
+      }
+
+      .btn-primary {
+        background: var(--color-accent);
+        color: #fff;
+        padding: 12px 22px;
+        border-radius: 8px;
+        font-weight: 600;
+        font-size: 15px;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(0, 119, 255, 0.25);
+        text-transform: uppercase;
+      }
+
+      .btn-primary:hover {
+        transform: translateY(-2px);
+        background: #0059b3;
+        box-shadow: 0 8px 22px rgba(0, 119, 255, 0.35);
+      }
+
+      /* ============ PROJECT CARD ============ */
+      .project {
+        background: var(--color-bg-clean);
+        border-radius: 12px;
+        padding: 30px;
+        margin-bottom: 25px;
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+        border-left: 5px solid var(--color-secondary);
+        transition: transform 0.25s ease, box-shadow 0.25s ease;
+      }
+
+      .project:hover {
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+      }
+
+      .project-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 15px;
+      }
+
+      .project-header h3 {
+        font-size: 24px;
+        color: var(--color-text-primary);
+        margin: 0;
+      }
+
+      .project p {
+        margin-bottom: 8px;
+        line-height: 1.6;
+        color: var(--color-text-secondary);
+        font-size: 15px;
+      }
+      .project strong {
+        color: var(--color-text-primary);
+      }
+
+      .status-group {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .status {
+        font-weight: 700;
+        padding: 4px 10px;
+        border-radius: 4px;
+        text-transform: uppercase;
+        font-size: 12px;
+      }
+
+      .status.pending {
+        background: #fff8e1;
+        color: var(--color-pending);
+      }
+      .status.verified {
+        background: #e8f5e9;
+        color: var(--color-success);
+      }
+      .status.funded {
+        background: #e1f5fe;
+        color: var(--color-funded);
+      }
+      .status.rejected {
+        background: #ffebee;
+        color: var(--color-rejected);
+      }
+
+      /* ============ MILESTONES ============ */
+      .milestones {
+        margin-top: 30px;
+        padding-top: 20px;
+        border-top: 1px dashed #e2e8f0;
+      }
+
+      .milestones h4 {
+        font-size: 20px;
+        color: var(--color-text-primary);
+        margin-bottom: 15px;
+        font-weight: 700;
+      }
+
+      .milestone {
+        background: var(--color-bg-light);
+        border: 1px solid #e2e8f0;
+        border-radius: 8px;
+        padding: 15px 18px;
+        margin: 12px 0;
+        transition: 0.2s;
+      }
+
+      .milestone h4 {
+        font-size: 16px;
+        color: var(--color-primary);
+        margin-bottom: 8px;
+        font-weight: 600;
+      }
+
+      .proof-link {
+        color: var(--color-accent);
+        font-family: var(--font-mono);
+        font-size: 13px;
+        margin-left: 5px;
+      }
+
+      /* ============ MILESTONE SUBMISSION FORM ============ */
+      .milestone-submission-form {
+        margin-top: 25px;
+        padding: 25px;
+        background: var(--color-bg-clean);
+        border-radius: 12px;
+        border: 1px solid var(--color-secondary);
+        box-shadow: 0 4px 15px rgba(0, 188, 212, 0.1);
+      }
+
+      .milestone-submission-form h4 {
+        color: var(--color-text-primary);
+        font-size: 20px;
+        margin-bottom: 15px;
+      }
+
+      label {
+        font-weight: 600;
+        color: var(--color-text-secondary);
+        display: block;
+        margin-top: 15px;
+        font-size: 13px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+
+      input[type="text"],
+      input[type="number"],
+      input[type="file"],
+      textarea {
+        width: 100%;
+        padding: 10px 12px;
+        border-radius: 6px;
+        border: 1px solid #cbd5e1;
+        margin-top: 5px;
+        font-size: 15px;
+        background: var(--color-bg-light);
+        transition: border-color 0.2s ease, box-shadow 0.2s ease;
+      }
+
+      input:focus,
+      textarea:focus {
+        border-color: var(--color-accent);
+        outline: none;
+        background: var(--color-bg-clean);
+        box-shadow: 0 0 0 2px rgba(0, 119, 255, 0.1);
+      }
+
+      button[type="submit"] {
+        margin-top: 20px;
+        background: var(--color-success);
+        color: #fff;
+        border: none;
+        padding: 12px 20px;
+        font-size: 16px;
+        font-weight: 700;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-transform: uppercase;
+      }
+
+      button[type="submit"]:hover {
+        background: #16a34a;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(22, 163, 74, 0.4);
+      }
+
+      /* Empty state */
+      .empty-state {
+        text-align: center;
+        color: var(--color-text-secondary);
+        margin-top: 80px;
+        font-size: 18px;
+        padding: 40px;
+        background: var(--color-bg-clean);
+        border-radius: 12px;
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.05);
+      }
+
+      /* FOOTER */
+      footer {
+        text-align: center;
+        padding: 25px;
+        font-size: 13px;
+        color: var(--color-text-secondary);
+        border-top: 1px solid #e2e8f0;
+        background: var(--color-bg-clean);
+        font-family: var(--font-mono);
+      }
+
+      @media (max-width: 768px) {
+        header {
+          padding: 18px 25px;
+        }
+        .dashboard-header {
+          flex-direction: column;
+          text-align: center;
+        }
+        .btn-primary {
+          width: 100%;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <header>
+      <h1>ResearChain<span>.io</span></h1>
+      <nav>
+        <a href="/">HOME</a>
+        <a href="/logout">LOGOUT</a>
+      </nav>
+    </header>
+
+    <div class="container">
+      <div class="dashboard-header">
+        <h2><i class="fas fa-graduation-cap"></i> Researcher Console</h2>
+        <a href="/projects/create" class="btn-primary"
+          ><i class="fas fa-upload"></i> REGISTER NEW PROJECT</a
+        >
+      </div>
+
+      <% if (projects.length === 0) { %>
+      <div class="empty-state">
+        <p>No projects registered yet.</p>
+        <p style="margin-top: 10px; font-size: 15px">
+          Click "Register New Project" above to secure your Intellectual
+          Property on the Blockchain.
+        </p>
+      </div>
+      <% } %> <% projects.forEach(project => { %>
+      <div class="project">
+        <div class="project-header">
+          <h3><%= project.title %></h3>
+          <div class="status-group">
+            <p style="font-weight: 700; color: var(--color-text-primary)">
+              Ledger Status:
+            </p>
+            <span class="status <%= project.status %>"
+              ><%= project.status.toUpperCase() %></span
+            >
+          </div>
+        </div>
+
+        <p><strong>Abstract:</strong> <%= project.abstract %></p>
+        <p>
+          <strong>Ownership Hash:</strong>
+          <a
+            href="https://ipfs.io/ipfs/<%= project.ipfsHash %>"
+            target="_blank"
+            class="proof-link"
+            style="font-weight: 700"
+            ><i class="fas fa-link"></i> VIEW BLOCKCHAIN PROOF</a
+          >
+        </p>
+
+        <div class="milestones">
+          <h4><i class="fas fa-tasks"></i> Project Milestones & Proofs</h4>
+
+          <% if (project.milestones && project.milestones.length > 0) { %> <%
+          project.milestones.forEach((m, idx) => { %>
+          <div class="milestone">
+            <h4>Milestone <%= idx + 1 %>: <%= m.title || "Untitled" %></h4>
+            <p><strong>Work Percentage:</strong> <%= m.percentage || 0 %>%</p>
+            <p><strong>Description:</strong> <%= m.description || "N/A" %></p>
+            <p>
+              <strong>Verification Status:</strong>
+              <span class="status <%= m.status %>" style="font-weight: 600">
+                <%= m.status ? m.status.toUpperCase() : "PENDING" %>
+              </span>
+            </p>
+
+            <% if (m.proof) { %>
+            <p>
+              <strong>Proof Hash:</strong>
+              <a
+                href="https://ipfs.io/ipfs/<%= m.proof %>"
+                target="_blank"
+                class="proof-link"
+                ><i class="fas fa-file-alt"></i> View Proof File</a
+              >
+            </p>
+            <% } %> <% if (m.status === "rejected") { %>
+            <div
+              class="milestone-submission-form"
+              style="
+                background-color: #ffebeb;
+                border-color: var(--color-rejected);
+              "
+            >
+              <h4 style="color: var(--color-rejected); margin-top: 0">
+                RE-SUBMISSION REQUIRED
+              </h4>
+              <p style="color: var(--color-rejected); margin-bottom: 10px">
+                The university verifier rejected the previous proof. Please
+                upload the revised proof document.
+              </p>
+
+              <form
+                method="POST"
+                action="/projects/<%= project._id %>/milestone/<%= idx %>/upload"
+                enctype="multipart/form-data"
+                style="background: none; padding: 0; border: none"
+              >
+                <label>Revised Proof File:</label>
+                <input type="file" name="file" required />
+                <button type="submit" style="background: var(--color-rejected)">
+                  <i class="fas fa-redo"></i> RE-SUBMIT PROOF
+                </button>
+              </form>
+            </div>
+            <% } %>
+          </div>
+          <% }) %> <% } else { %>
+          <p style="color: var(--color-text-secondary); margin-left: 10px">
+            No milestones have been defined or submitted for this project.
+          </p>
+          <% } %>
+        </div>
+
+        <% if (project.status === "funded") { %>
+        <div class="milestone-submission-form">
+          <h4><i class="fas fa-upload"></i> Submit New Milestone Proof</h4>
+
+          <form
+            method="POST"
+            action="/projects/<%= project._id %>/milestone"
+            enctype="multipart/form-data"
+          >
+            <label>Milestone Title</label>
+            <input
+              type="text"
+              name="title"
+              required
+              placeholder="e.g., Phase 1 Data Collection Complete"
+            />
+
+            <label>Description (Summary of work)</label>
+            <textarea
+              name="description"
+              required
+              placeholder="Provide a brief summary for the university verifier."
+            ></textarea>
+
+            <label>Percentage of Total Work Completed (%)</label>
+            <input
+              type="number"
+              name="percentage"
+              step="1"
+              required
+              placeholder="0 - 100"
+            />
+
+            <label>Upload Proof (PDFs, Data Sets, Reports)</label>
+            <input type="file" name="file" required />
+
+            <button type="submit">
+              <i class="fas fa-cloud-upload-alt"></i> SUBMIT PROOF FOR
+              VERIFICATION
+            </button>
+          </form>
+        </div>
+        <% } %>
+      </div>
+      <% }) %>
+    </div>
+
+    <footer>PROTOCOL VERSION 2.0 // IMMUTABLE LEDGER // &copy; 2025</footer>
+  </body>
+</html>

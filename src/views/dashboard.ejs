@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>University Dashboard</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background: #f4f6f8;
+        margin: 0;
+        padding: 0;
+      }
+      .container {
+        max-width: 1000px;
+        margin: auto;
+        padding: 30px;
+      }
+      h1 {
+        text-align: center;
+        color: #2c3e50;
+        margin-bottom: 30px;
+      }
+      .project {
+        background: #fff;
+        border-radius: 10px;
+        padding: 20px;
+        margin-bottom: 25px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+      }
+      .project h2 {
+        margin-top: 0;
+        color: #2980b9;
+      }
+      .status {
+        font-weight: bold;
+        padding: 4px 8px;
+        border-radius: 5px;
+        color: #fff;
+      }
+      .status.pending {
+        background: #f39c12;
+      }
+      .status.verified {
+        background: #27ae60;
+      }
+      .status.funded {
+        background: #2980b9;
+      }
+      .status.rejected {
+        background: #c0392b;
+      }
+
+      .milestone {
+        background: #f9f9f9;
+        padding: 15px;
+        margin: 10px 0;
+        border-radius: 6px;
+      }
+      .milestone h4 {
+        margin: 0 0 10px 0;
+      }
+      .btn {
+        background: #2980b9;
+        color: #fff;
+        border: none;
+        padding: 8px 14px;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 14px;
+        font-weight: bold;
+        margin-right: 5px;
+      }
+      .btn:hover {
+        background: #1f5a7d;
+      }
+      .reject {
+        background: #c0392b;
+      }
+      .reject:hover {
+        background: #922b21;
+      }
+      a {
+        color: #2980b9;
+        text-decoration: none;
+      }
+      a:hover {
+        text-decoration: underline;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="container">
+      <h1>🏛️ University Dashboard</h1>
+
+      <% if (projects.length === 0) { %>
+      <p style="text-align: center">No projects pending or funded yet.</p>
+      <% } %> <% projects.forEach(project => { %>
+      <div class="project">
+        <h2><%= project.title %></h2>
+        <p><strong>Student:</strong> <%= project.owner?.name || "Unknown" %></p>
+        <p>
+          <strong>Status:</strong>
+          <span class="status <%= project.status %>"
+            ><%= project.status %></span
+          >
+        </p>
+        <p>
+          <strong>Abstract:</strong> <%= project.abstract || "No abstract
+          provided" %>
+        </p>
+        <% if (project.ipfsHash) { %>
+        <p>
+          <strong>Proposal File:</strong>
+          <a
+            href="https://ipfs.io/ipfs/<%= project.ipfsHash %>"
+            target="_blank"
+          >
+            View Proposal
+          </a>
+        </p>
+        <% } %>
+
+        <!-- PROJECT APPROVAL SECTION -->
+        <% if (project.status === "pending") { %>
+        <form
+          action="/university/approve/<%= project._id %>"
+          method="POST"
+          style="display: inline-block"
+        >
+          <button type="submit" class="btn">✅ Approve Project</button>
+        </form>
+        <form
+          action="/university/reject/<%= project._id %>"
+          method="POST"
+          style="display: inline-block"
+        >
+          <button type="submit" class="btn reject">❌ Reject Project</button>
+        </form>
+        <% } %>
+
+        <!-- FUNDED PROJECT MILESTONES -->
+        <% if (project.status === "funded" && project.milestones &&
+        project.milestones.length > 0) { %>
+        <h3>📌 Milestones</h3>
+        <% project.milestones.forEach((m, i) => { %>
+        <div class="milestone">
+          <h4>Milestone <%= i+1 %>: <%= m.title || "Untitled" %></h4>
+          <p><strong>Status:</strong> <%= m.status || "Pending" %></p>
+          <p><strong>Description:</strong> <%= m.description || "N/A" %></p>
+          <p><strong>Work Percentage:</strong> <%= m.percentage || 0 %>%</p>
+          <% if (m.proof) { %>
+          <p>
+            <strong>Proof:</strong>
+            <a href="https://ipfs.io/ipfs/<%= m.proof %>" target="_blank"
+              >📎 View Proof</a
+            >
+          </p>
+          <% } %> <% if (m.status === "submitted") { %>
+          <form
+            action="/university/<%= project._id %>/milestone/<%= i %>/approve"
+            method="POST"
+            style="display: inline-block"
+          >
+            <button type="submit" class="btn">✅ Approve Milestone</button>
+          </form>
+          <form
+            action="/university/<%= project._id %>/milestone/<%= i %>/reject"
+            method="POST"
+            style="display: inline-block"
+          >
+            <button type="submit" class="btn reject">
+              ❌ Reject Milestone
+            </button>
+          </form>
+          <% } else if (m.status === "approved") { %>
+          <p>✅ Approved & released to student wallet.</p>
+          <% } else if (m.status === "rejected") { %>
+          <p>❌ Rejected — student must re-upload proof.</p>
+          <% } %>
+        </div>
+        <% }) %> <% } %>
+      </div>
+      <% }) %>
+    </div>
+  </body>
+</html>

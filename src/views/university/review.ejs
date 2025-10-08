@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>University Project Validation</title>
+  </head>
+  <body>
+    <h1>Pending Projects for Review</h1>
+
+    <% if (projects.length === 0) { %>
+    <p>No pending projects at the moment.</p>
+    <% } else { %> <% projects.forEach(project => { %>
+    <div class="project-card">
+      <h2><%= project.title %></h2>
+      <p><%= project.abstract %></p>
+      <p><strong>Student:</strong> <%= project.owner.name %></p>
+      <p><strong>Blockchain Hash:</strong> <%= project.blockchainHash %></p>
+      <form
+        action="/university/approve/<%= project._id %>"
+        method="POST"
+        style="display: inline"
+      >
+        <button type="submit">✅ Approve</button>
+      </form>
+      <form
+        action="/university/reject/<%= project._id %>"
+        method="POST"
+        style="display: inline"
+      >
+        <button type="submit">❌ Reject</button>
+      </form>
+    </div>
+    <hr />
+    <% }) %> <% } %>
+  </body>
+</html>

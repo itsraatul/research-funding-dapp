@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>ResearChain: Blockchain Bridge for Industry & Academia</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Mono:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    />
+    <style>
+      /* ------------------ Global Styles (Final Professional Bright Theme) ------------------ */
+      :root {
+        --color-accent: #0066ff; /* Deep Professional Blue */
+        --color-secondary: #00bcd4; /* Vibrant Cyan/Teal */
+        --color-text-primary: #171a23; /* Very Dark Blue-Gray */
+        --color-text-secondary: #586176; /* Muted Slate Gray */
+        --color-bg-base: #d1e4f3; /* **Richer Sky Blue Base (The definitive background)** */
+        --color-bg-clean: #ffffff; /* Pure White for contrast */
+        --color-shadow-subtle: rgba(0, 0, 0, 0.1);
+        --font-mono: "Space Mono", monospace;
+        --font-sans: "Inter", sans-serif;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        font-family: var(--font-sans);
+        margin: 0;
+        padding: 0;
+        background-color: var(--color-bg-base);
+        color: var(--color-text-primary);
+        line-height: 1.6;
+        min-height: 100vh;
+        scroll-behavior: smooth;
+        /* Subtle texture for depth */
+        background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="400" height="400" viewBox="0 0 100 100"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch" /><feColorMatrix type="saturate" values="0" /><feComponentTransfer><feFuncA type="linear" slope="0.1"/></feComponentTransfer></filter><rect width="100" height="100" fill="%23d1e4f3" filter="url(%23n)" opacity="0.5"/></svg>');
+      }
+
+      /* ------------------ Utility Classes ------------------ */
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 20px;
+      }
+      .section-title {
+        font-family: var(--font-sans);
+        font-size: 38px; /* Slightly adjusted size */
+        text-align: center;
+        margin-bottom: 20px;
+        color: var(--color-text-primary);
+        font-weight: 800;
+        letter-spacing: -0.5px;
+      }
+      .section-subtitle {
+        text-align: center;
+        margin-bottom: 70px;
+        font-size: 16px;
+        color: var(--color-text-secondary);
+        max-width: 800px;
+        margin-left: auto;
+        margin-right: auto;
+      }
+
+      /* ------------------ Header ------------------ */
+      header {
+        background: var(--color-bg-clean);
+        padding: 18px 40px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+      }
+      header h1 {
+        margin: 0;
+        font-size: 28px; /* Slight increase for professionalism */
+        letter-spacing: 1px;
+        color: var(--color-text-primary);
+        font-family: var(--font-mono);
+        font-weight: 700;
+      }
+      header h1 span {
+        color: var(--color-accent);
+        text-shadow: 0 0 5px rgba(0, 102, 255, 0.2);
+      }
+      nav a {
+        color: var(--color-text-secondary);
+        margin: 0 15px;
+        text-decoration: none;
+        font-weight: 500;
+        transition: color 0.3s;
+        position: relative;
+      }
+      nav a:hover {
+        color: var(--color-accent);
+      }
+      nav a::after {
+        content: "";
+        position: absolute;
+        width: 0;
+        height: 3px;
+        bottom: -5px;
+        left: 0;
+        background-color: var(--color-secondary);
+        transition: width 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      }
+      nav a:hover::after {
+        width: 100%;
+      }
+
+      /* ------------------ Hero Section (Disruptive Look) ------------------ */
+      .hero {
+        text-align: center;
+        padding: 140px 20px 100px;
+        /* Using a clean blue gradient over the aqua base for depth */
+        background: linear-gradient(
+          180deg,
+          var(--color-bg-clean) 0%,
+          #dbe6f0 100%
+        );
+        position: relative;
+        overflow: hidden;
+        border-bottom: 4px solid var(--color-accent);
+      }
+      .hero h2 {
+        font-family: var(--font-sans);
+        font-size: 68px; /* Size optimized for visual impact */
+        margin-bottom: 10px;
+        letter-spacing: -2px;
+        color: var(--color-text-primary);
+        font-weight: 900;
+        line-height: 1;
+        text-shadow: 0 0 5px rgba(0, 0, 0, 0.05);
+      }
+      .hero strong {
+        color: var(--color-secondary);
+        font-weight: 800;
+        text-shadow: 0 0 10px rgba(0, 188, 212, 0.4);
+      }
+      .hero .tagline {
+        font-size: 22px;
+        font-weight: 400;
+        margin-bottom: 50px;
+        max-width: 900px;
+        margin-left: auto;
+        margin-right: auto;
+        color: var(--color-text-secondary);
+      }
+      .buttons a {
+        display: inline-block;
+        margin: 10px;
+        padding: 16px 35px; /* Slightly larger buttons */
+        border-radius: 50px;
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 17px;
+        transition: all 0.3s ease;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+      }
+      .primary-cta {
+        background: var(--color-accent);
+        color: var(--color-bg-clean);
+        border: 2px solid var(--color-accent);
+      }
+      .primary-cta:hover {
+        background: #0059b3;
+        transform: translateY(-4px) scale(1.03);
+        box-shadow: 0 10px 25px rgba(0, 102, 255, 0.7);
+      }
+      .secondary-cta {
+        background: var(--color-secondary);
+        color: var(--color-bg-clean);
+        border: 2px solid var(--color-secondary);
+      }
+      .secondary-cta:hover {
+        background: #00a4b3;
+        transform: translateY(-4px) scale(1.03);
+        box-shadow: 0 10px 25px rgba(0, 188, 212, 0.7);
+      }
+
+      /* ------------------ Core Mechanism Section ------------------ */
+      .mechanism-focus {
+        padding: 100px 20px;
+        background-color: var(--color-bg-base); /* Aqua base */
+      }
+      .mechanism-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 40px;
+        margin-top: 40px;
+      }
+      .mechanism-card {
+        background-color: var(
+          --color-bg-clean
+        ); /* White cards for separation */
+        padding: 30px;
+        border-radius: 12px;
+        box-shadow: 0 8px 20px var(--color-shadow-subtle);
+        border: 1px solid #e0e0e0;
+        transition: transform 0.3s, box-shadow 0.3s;
+      }
+      .mechanism-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+        border-color: var(--color-accent);
+      }
+      .mechanism-card i {
+        font-size: 38px;
+        color: var(--color-accent);
+        margin-bottom: 10px;
+        text-shadow: 0 0 8px rgba(0, 102, 255, 0.5);
+      }
+      .mechanism-card h4 {
+        color: var(--color-text-primary);
+        font-size: 22px;
+        margin-top: 0;
+        margin-bottom: 8px;
+        font-weight: 700;
+      }
+      .mechanism-card p {
+        font-size: 16px;
+        color: var(--color-text-secondary);
+      }
+      .mechanism-card span.tech {
+        display: block;
+        font-weight: 700;
+        font-family: var(--font-mono);
+        color: var(--color-secondary);
+        font-size: 13px;
+        margin-top: 10px;
+      }
+
+      /* ------------------ Roles Section ------------------ */
+      .roles {
+        padding: 100px 20px;
+        background-color: var(--color-bg-clean);
+        border-top: 1px solid #e0e0e0;
+      }
+      .roles-grid {
+        max-width: 1000px;
+        margin: 0 auto;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 30px;
+      }
+      .role-card {
+        flex: 1 1 30%;
+        background: var(--color-bg-light); /* Lighter card background */
+        padding: 40px;
+        border-radius: 8px;
+        box-shadow: 0 6px 15px var(--color-shadow-subtle);
+        border: 1px solid #e0e0e0;
+        text-align: center;
+        transition: all 0.3s ease;
+      }
+      .role-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+        border-color: var(--color-accent);
+      }
+      .role-card i.role-icon {
+        font-size: 48px;
+        color: var(--color-secondary);
+        margin-bottom: 15px;
+      }
+      .role-card h3 {
+        margin-bottom: 15px;
+        font-size: 24px;
+        color: var(--color-text-primary);
+        font-weight: 600;
+      }
+      .role-card a {
+        display: inline-block;
+        margin-top: 15px;
+        padding: 12px 30px;
+        border-radius: 50px;
+        text-decoration: none;
+        font-weight: 600;
+        transition: background-color 0.3s;
+        font-size: 14px;
+        background: var(--color-accent);
+        color: var(--color-bg-clean);
+      }
+      .role-card a:hover {
+        background: var(--color-secondary);
+        color: var(--color-text-primary);
+      }
+
+      /* ------------------ Footer ------------------ */
+      footer {
+        background: var(--color-text-primary);
+        color: var(--color-bg-light);
+        text-align: center;
+        padding: 30px;
+        font-size: 14px;
+        letter-spacing: 0.5px;
+        font-family: var(--font-mono);
+      }
+      footer a {
+        color: var(--color-accent);
+        text-decoration: none;
+      }
+
+      /* ------------------ Responsive ------------------ */
+      @media (max-width: 768px) {
+        header {
+          flex-direction: column;
+        }
+        nav {
+          margin-top: 10px;
+        }
+        .hero h2 {
+          font-size: 48px;
+        }
+        .hero .tagline {
+          font-size: 18px;
+        }
+        .section-title {
+          font-size: 32px;
+        }
+        .primary-cta,
+        .secondary-cta {
+          width: 100%;
+          display: block;
+        }
+        .roles-grid {
+          flex-direction: column;
+        }
+        .role-card {
+          flex: 1 1 100%;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <header>
+      <h1>ResearChain<span>.io</span></h1>
+      <nav>
+        <a href="/">Home</a>
+        <a href="#mechanism">The Bridge</a>
+        <a href="/public/dashboard">Dashboard</a>
+        <a href="/login">Authenticate</a>
+      </nav>
+    </header>
+
+    <% if (!session || !session.user) { %>
+    <a href="/register" style="display: none">Register</a>
+    <% } else { %>
+    <a href="/redirect" style="display: none">Dashboard</a>
+    <a href="/logout" style="display: none">Logout</a>
+    <% } %>
+
+    <section class="hero">
+      <div class="container">
+        <h2>
+          BLOCKCHAIN. THE <strong>BRIDGE</strong> BETWEEN RESEARCH AND INDUSTRY.
+        </h2>
+        <p class="tagline">
+          ResearChain creates a trustless, transparent infrastructure that
+          directly connects academic innovation with industrial capital, solving
+          the fundamental challenges of ownership and accountability in R&D
+          funding.
+        </p>
+        <div class="buttons">
+          <a href="/login" class="primary-cta"
+            ><i class="fas fa-microchip"></i> INITIATE CONNECTION</a
+          >
+          <a href="/register" class="secondary-cta"
+            ><i class="fas fa-plus"></i> JOIN THE NETWORK</a
+          >
+        </div>
+      </div>
+    </section>
+
+    <section class="mechanism-focus" id="mechanism">
+      <div class="container">
+        <h3 class="section-title">
+          SDG 9: RESILIENT INFRASTRUCTURE FOR INNOVATION
+        </h3>
+        <p class="section-subtitle">
+          Our decentralized core provides the immutable security and
+          transparency necessary to build lasting trust and efficient capital
+          deployment for R&D across sectors.
+        </p>
+        <div class="mechanism-grid">
+          <div class="mechanism-card">
+            <i class="fas fa-link"></i>
+            <h4>THE ACADEMIA-INDUSTRY BRIDGE</h4>
+            <p>
+              We provide a neutral, verifiable platform where university
+              research is instantly validated, lowering the barrier for
+              industrial investment.
+            </p>
+            <span class="tech">CORE VALUE PROPOSITION</span>
+          </div>
+          <div class="mechanism-card">
+            <i class="fas fa-file-contract"></i>
+            <h4>TRUSTLESS ESCROW FUNDING</h4>
+            <p>
+              Smart contracts secure industrial capital and ensure funds are
+              automatically released only upon university verification of
+              project milestones.
+            </p>
+            <span class="tech">SOLIDITY + MILESTONE ESCROW</span>
+          </div>
+          <div class="mechanism-card">
+            <i class="fas fa-fingerprint"></i>
+            <h4>IMMUTABLE IP OWNERSHIP</h4>
+            <p>
+              Research is hashed, timestamped, and recorded on the ledger,
+              providing undeniable, immutable proof of intellectual property.
+            </p>
+            <span class="tech">IPFS + BLOCKCHAIN REGISTRY</span>
+          </div>
+          <div class="mechanism-card">
+            <i class="fas fa-chart-bar"></i>
+            <h4>TRANSPARENT CAPITAL TRACEABILITY</h4>
+            <p>
+              Every transaction and progress report is visible on the public
+              dashboard, offering full accountability for R&D spending.
+            </p>
+            <span class="tech">SDG 9: FOSTERING INNOVATION</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="roles">
+      <div class="container">
+        <h3 class="section-title">ACCESS PORTALS</h3>
+        <p class="section-subtitle">
+          Securely engage with the ResearChain decentralized environment based
+          on your role.
+        </p>
+        <div class="roles-grid">
+          <div class="role-card">
+            <i class="role-icon fas fa-briefcase"></i>
+            <h3>INDUSTRY FUNDER</h3>
+            <p>
+              Invest in verified R&D, trace fund deployment, and secure priority
+              IP licensing.
+            </p>
+            <a href="/register?role=company">Funder Portal</a>
+          </div>
+
+          <div class="role-card">
+            <i class="role-icon fas fa-user-graduate"></i>
+            <h3>RESEARCHER</h3>
+            <p>
+              Secure your IP, gain verification, and receive automated, prompt
+              milestone payouts.
+            </p>
+            <a href="/register?role=student">Researcher Portal</a>
+          </div>
+
+          <div class="role-card">
+            <i class="role-icon fas fa-landmark"></i>
+            <h3>UNIVERSITY VERIFIER</h3>
+            <p>
+              Endorse project authenticity, validate progress, and enhance
+              institutional reputation.
+            </p>
+            <a href="/register?role=university">Verifier Portal</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <footer>
+      <p>
+        [INIT] ResearChain // Distributed Ledger Protocol &copy; 2025 | Powered
+        by Blockchain for <a href="#mechanism">SDG 9 Advancement</a>
+      </p>
+    </footer>
+  </body>
+</html>

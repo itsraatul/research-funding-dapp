@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Upload Research Project | ResearChain IP Registry</title>
+
+    <!-- Google Font for high-tech, serious look -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Space+Mono:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+    <!-- Font Awesome for sleek icons -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    />
+
+    <style>
+      /* ------------------ Global Styles (ResearChain Theme) ------------------ */
+      :root {
+        --color-accent: #0077ff; /* Electric Blue (Action/Primary) */
+        --color-secondary: #00bcd4; /* Vibrant Cyan/Teal (Highlight) */
+        --color-success: #27ae60; /* Success Green */
+        --color-text-primary: #171a23;
+        --color-text-secondary: #6b778d;
+        --color-bg-light: #f7f9fc;
+        --color-bg-clean: #ffffff;
+        --font-mono: "Space Mono", monospace;
+        --font-sans: "Inter", sans-serif;
+      }
+      /* ---------- Global Reset ---------- */
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: var(--font-sans);
+        background-color: var(--color-bg-light);
+        color: var(--color-text-primary);
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+      }
+
+      a {
+        text-decoration: none;
+        color: var(--color-accent);
+      }
+
+      header {
+        background: var(--color-bg-clean);
+        box-shadow: 0 1px 10px rgba(0, 0, 0, 0.05);
+        padding: 18px 60px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        border-bottom: 2px solid var(--color-secondary);
+      }
+
+      header h1 {
+        font-family: var(--font-mono);
+        font-size: 24px;
+        font-weight: 700;
+        color: var(--color-text-primary);
+        letter-spacing: 1px;
+      }
+      header h1 span {
+        color: var(--color-secondary);
+      }
+
+      nav a {
+        color: var(--color-text-secondary);
+        font-weight: 600;
+        margin-left: 25px;
+        transition: color 0.3s ease;
+      }
+
+      nav a:hover {
+        color: var(--color-accent);
+      }
+
+      /* ---------- Container (Central Form Panel) ---------- */
+      .container {
+        max-width: 800px;
+        margin: 60px auto;
+        background: var(--color-bg-clean);
+        border-radius: 12px;
+        padding: 40px 50px;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+        border-top: 5px solid var(--color-accent);
+      }
+
+      h2 {
+        text-align: center;
+        font-size: 32px;
+        color: var(--color-text-primary);
+        font-weight: 800;
+        margin-bottom: 35px;
+        letter-spacing: -0.5px;
+      }
+
+      .form-group {
+        margin-bottom: 20px;
+      }
+
+      label {
+        font-weight: 600;
+        font-size: 13px;
+        margin-bottom: 6px;
+        color: var(--color-text-secondary);
+        display: block;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+
+      input[type="text"],
+      textarea {
+        width: 100%;
+        padding: 12px 14px;
+        border-radius: 8px;
+        border: 1px solid #d1d9e6;
+        font-size: 16px;
+        background: var(--color-bg-light);
+        color: var(--color-text-primary);
+        transition: border-color 0.25s ease, background 0.25s ease;
+      }
+
+      input:focus,
+      textarea:focus {
+        border-color: var(--color-accent);
+        outline: none;
+        background: var(--color-bg-clean);
+        box-shadow: 0 0 0 3px rgba(0, 119, 255, 0.2);
+      }
+
+      textarea {
+        min-height: 150px;
+        resize: vertical;
+      }
+
+      /* ---------- File Upload ---------- */
+      .file-upload {
+        border: 2px dashed var(--color-secondary);
+        background: var(--color-bg-light);
+        border-radius: 12px;
+        padding: 30px;
+        text-align: center;
+        margin-bottom: 25px;
+        transition: all 0.3s ease;
+        position: relative;
+        cursor: pointer;
+      }
+
+      .file-upload:hover {
+        border-color: var(--color-accent);
+        background: #eaf3ff;
+      }
+
+      .file-upload input {
+        display: none;
+      }
+
+      .file-upload-content i {
+        font-size: 30px;
+        color: var(--color-accent);
+        margin-bottom: 10px;
+      }
+
+      .file-upload-content label {
+        font-size: 16px;
+        color: var(--color-accent);
+        font-weight: 700;
+        cursor: pointer;
+        display: block;
+        text-transform: none;
+        letter-spacing: 0;
+      }
+
+      .file-upload-content p {
+        font-size: 14px;
+        color: var(--color-text-secondary);
+        margin-top: 8px;
+      }
+
+      .file-name {
+        margin-top: 10px;
+        font-size: 14px;
+        color: var(--color-success);
+        font-weight: 500;
+        display: none;
+        animation: fadeIn 0.4s ease;
+      }
+
+      .file-upload.success {
+        border-color: var(--color-success);
+        background: #f0fdf4;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(-4px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      /* ---------- Submit Button ---------- */
+      button {
+        background: var(--color-accent);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        padding: 14px;
+        font-size: 17px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 6px 18px rgba(0, 119, 255, 0.3);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+
+      button:hover {
+        transform: translateY(-2px);
+        background: #0059b3;
+        box-shadow: 0 10px 25px rgba(0, 119, 255, 0.45);
+      }
+
+      footer {
+        margin-top: auto;
+        background: var(--color-bg-clean);
+        border-top: 1px solid #e2e8f0;
+        text-align: center;
+        padding: 25px;
+        color: var(--color-text-secondary);
+        font-size: 13px;
+        font-family: var(--font-mono);
+      }
+
+      @media (max-width: 768px) {
+        header {
+          padding: 18px 25px;
+        }
+        .container {
+          padding: 30px 25px;
+          margin: 30px auto;
+        }
+        h2 {
+          font-size: 26px;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <header>
+      <h1>ResearChain<span>.io</span></h1>
+      <nav>
+        <a href="/">HOME</a>
+        <a href="/student/dashboard">DASHBOARD</a>
+        <a href="/logout">LOGOUT</a>
+      </nav>
+    </header>
+
+    <div class="container">
+      <h2><i class="fas fa-fingerprint"></i> Secure Research Registration</h2>
+
+      <form
+        action="/projects/create"
+        method="POST"
+        enctype="multipart/form-data"
+      >
+        <div class="form-group">
+          <label for="title">Project Title</label>
+          <input
+            type="text"
+            id="title"
+            name="title"
+            placeholder="Enter the official title of your research or patent"
+            required
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="abstract">Abstract</label>
+          <textarea
+            id="abstract"
+            name="abstract"
+            placeholder="Provide a concise, detailed abstract (150-300 words). This summary will be visible to potential funders."
+            required
+          ></textarea>
+        </div>
+
+        <div class="form-group">
+          <label>Intellectual Property File Upload (IPFS Staging)</label>
+          <div class="file-upload" id="fileUploadBox">
+            <input type="file" id="file" name="file" required />
+            <div class="file-upload-content">
+              <i class="fas fa-cloud-upload-alt"></i>
+              <label for="file">Click here to upload the Proposal File</label>
+              <p>
+                Securely upload the final project document (PDF, DOCX, ZIP).
+                This file will be hashed and time-stamped on the Blockchain.
+              </p>
+            </div>
+            <div class="file-name" id="fileName"></div>
+          </div>
+        </div>
+
+        <button type="submit">
+          <i class="fas fa-lock"></i> REGISTER IP & SUBMIT FOR VERIFICATION
+        </button>
+      </form>
+    </div>
+
+    <footer>PROTOCOL VERSION 2.0 // IMMUTABLE LEDGER // &copy; 2025</footer>
+
+    <script>
+      const fileInput = document.getElementById("file");
+      const fileName = document.getElementById("fileName");
+      const uploadBox = document.getElementById("fileUploadBox");
+
+      fileInput.addEventListener("change", (e) => {
+        const file = e.target.files[0];
+        if (file) {
+          fileName.textContent = `✅ File Ready: ${file.name} (${(
+            file.size /
+            1024 /
+            1024
+          ).toFixed(2)} MB)`;
+          fileName.style.display = "block";
+          uploadBox.classList.add("success");
+        } else {
+          fileName.style.display = "none";
+          uploadBox.classList.remove("success");
+        }
+      });
+    </script>
+  </body>
+</html>

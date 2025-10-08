@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Propose Funding | Research Ownership DApp</title>
+
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Inter", "Segoe UI", Roboto, sans-serif;
+        background: linear-gradient(135deg, #f9fafb, #f1f5f9);
+        color: #1e293b;
+        min-height: 100vh;
+      }
+
+      header {
+        background: #ffffff;
+        box-shadow: 0 1px 8px rgba(0, 0, 0, 0.05);
+        padding: 18px 60px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        position: sticky;
+        top: 0;
+        z-index: 10;
+      }
+
+      header h1 {
+        font-size: 20px;
+        font-weight: 600;
+        color: #0f172a;
+      }
+
+      nav a {
+        color: #334155;
+        font-weight: 500;
+        margin-left: 25px;
+        text-decoration: none;
+        transition: color 0.25s ease;
+      }
+
+      nav a:hover {
+        color: #2563eb;
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: 60px auto;
+        padding: 0 30px 80px;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 40px;
+      }
+
+      .project-details {
+        flex: 1 1 45%;
+        background: #ffffff;
+        border-radius: 14px;
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.05);
+        padding: 30px 35px;
+      }
+
+      .project-details h2 {
+        font-size: 26px;
+        color: #1e40af;
+        margin-bottom: 10px;
+      }
+
+      .project-details p {
+        font-size: 15px;
+        color: #475569;
+        line-height: 1.7;
+        margin-bottom: 12px;
+      }
+
+      .project-details a {
+        color: #2563eb;
+        font-weight: 500;
+      }
+
+      .funding-form {
+        flex: 1 1 50%;
+        background: #ffffff;
+        border-radius: 14px;
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.05);
+        padding: 35px 40px;
+      }
+
+      .funding-form h3 {
+        font-size: 24px;
+        color: #0f172a;
+        margin-bottom: 20px;
+      }
+
+      label {
+        display: block;
+        font-weight: 500;
+        font-size: 14px;
+        color: #475569;
+        margin-bottom: 6px;
+      }
+
+      input {
+        width: 100%;
+        padding: 12px 14px;
+        border: 1px solid #cbd5e1;
+        border-radius: 10px;
+        font-size: 15px;
+        background: #f9fafb;
+        margin-bottom: 18px;
+        transition: all 0.25s ease;
+      }
+
+      input:focus {
+        border-color: #3b82f6;
+        outline: none;
+        background: #fff;
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+      }
+
+      .milestones {
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+        border-radius: 10px;
+        padding: 15px 18px;
+        margin-top: 10px;
+      }
+
+      .milestones div {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 10px;
+      }
+
+      .milestones input {
+        flex: 1;
+        margin-bottom: 0;
+      }
+
+      .add-btn {
+        background: #e2e8f0;
+        border: none;
+        color: #334155;
+        padding: 10px 15px;
+        border-radius: 8px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.25s ease;
+        margin-top: 10px;
+      }
+
+      .add-btn:hover {
+        background: #cbd5e1;
+      }
+
+      .submit-btn {
+        width: 100%;
+        background: linear-gradient(90deg, #3b82f6, #6366f1);
+        color: #fff;
+        border: none;
+        border-radius: 10px;
+        padding: 14px;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        margin-top: 25px;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(99, 102, 241, 0.25);
+      }
+
+      .submit-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(99, 102, 241, 0.35);
+      }
+
+      footer {
+        background: #ffffff;
+        border-top: 1px solid #e2e8f0;
+        text-align: center;
+        padding: 25px;
+        color: #64748b;
+        font-size: 14px;
+      }
+
+      @media (max-width: 900px) {
+        .container {
+          flex-direction: column;
+        }
+      }
+    </style>
+
+    <script>
+      function addMilestone() {
+        const container = document.getElementById("milestones");
+        const index = container.children.length;
+        container.insertAdjacentHTML(
+          "beforeend",
+          `
+          <div>
+            <input type="text" placeholder="Milestone Title" id="title${index}">
+            <input type="number" placeholder="Percentage" id="percentage${index}">
+          </div>
+        `
+        );
+      }
+
+      function prepareForm() {
+        const container = document.getElementById("milestones");
+        const milestones = [];
+        for (let i = 0; i < container.children.length; i++) {
+          milestones.push({
+            title: document.getElementById("title" + i).value,
+            percentage: parseFloat(
+              document.getElementById("percentage" + i).value
+            ),
+          });
+        }
+        document.getElementById("milestonesInput").value =
+          JSON.stringify(milestones);
+      }
+    </script>
+  </head>
+
+  <body>
+    <header>
+      <h1>Research Ownership DApp</h1>
+      <nav>
+        <a href="/">Home</a>
+        <a href="/company/dashboard">Dashboard</a>
+        <a href="/logout">Logout</a>
+      </nav>
+    </header>
+
+    <div class="container">
+      <div class="project-details">
+        <h2><%= project.title %></h2>
+        <p><strong>Student:</strong> <%= project.owner?.name %></p>
+        <p><strong>University:</strong> <%= project.university?.name %></p>
+        <p><strong>Abstract:</strong> <%= project.abstract %></p>
+        <p>
+          <strong>Proposal IPFS:</strong>
+          <a
+            href="https://ipfs.io/ipfs/<%= project.ipfsHash %>"
+            target="_blank"
+          >
+            View Proposal
+          </a>
+        </p>
+      </div>
+
+      <div class="funding-form">
+        <h3>💰 Propose Funding</h3>
+        <form
+          action="/company/fund/<%= project._id %>"
+          method="POST"
+          onsubmit="prepareForm()"
+        >
+          <label>Total Funding Amount (ETH)</label>
+          <input type="number" name="totalAmount" required />
+
+          <label>Define Milestones</label>
+          <div id="milestones" class="milestones"></div>
+          <button type="button" class="add-btn" onclick="addMilestone()">
+            ➕ Add Milestone
+          </button>
+
+          <input type="hidden" name="milestones" id="milestonesInput" />
+          <button type="submit" class="submit-btn">
+            🔒 Lock Funds in Escrow
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <footer>
+      &copy; 2025 Research Ownership DApp | Empowering Transparent Innovation
+    </footer>
+  </body>
+</html>

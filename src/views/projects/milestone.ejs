@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Project Milestones | Research Ownership DApp</title>
+
+    <style>
+      body {
+        font-family: "Inter", "Segoe UI", Roboto, sans-serif;
+        background: linear-gradient(135deg, #f9fafb, #f1f5f9);
+        color: #1e293b;
+        min-height: 100vh;
+      }
+
+      header {
+        background: #ffffff;
+        box-shadow: 0 1px 8px rgba(0, 0, 0, 0.05);
+        padding: 18px 60px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        position: sticky;
+        top: 0;
+        z-index: 10;
+      }
+
+      header h1 {
+        font-size: 20px;
+        font-weight: 600;
+        color: #0f172a;
+      }
+
+      nav a {
+        color: #334155;
+        font-weight: 500;
+        margin-left: 25px;
+        text-decoration: none;
+        transition: color 0.25s ease;
+      }
+
+      nav a:hover {
+        color: #2563eb;
+      }
+
+      .container {
+        max-width: 1000px;
+        margin: 60px auto;
+        background: #ffffff;
+        border-radius: 18px;
+        padding: 40px 50px;
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+      }
+
+      h2 {
+        font-size: 28px;
+        font-weight: 700;
+        color: #0f172a;
+        margin-bottom: 8px;
+      }
+
+      .sub {
+        font-size: 15px;
+        color: #64748b;
+        margin-bottom: 30px;
+      }
+
+      .milestone {
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+        border-radius: 14px;
+        padding: 25px 30px;
+        margin-bottom: 25px;
+        transition: all 0.25s ease;
+      }
+
+      .milestone:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.06);
+      }
+
+      .milestone h3 {
+        font-size: 20px;
+        font-weight: 600;
+        color: #1e40af;
+        margin-bottom: 10px;
+      }
+
+      .milestone p {
+        font-size: 15px;
+        color: #475569;
+        margin: 6px 0;
+        line-height: 1.6;
+      }
+
+      .status {
+        display: inline-block;
+        padding: 5px 10px;
+        border-radius: 6px;
+        font-weight: 600;
+        font-size: 13px;
+        color: #fff;
+        text-transform: capitalize;
+      }
+
+      .status.pending {
+        background: #f59e0b;
+      }
+      .status.submitted {
+        background: #8b5cf6;
+      }
+      .status.approved {
+        background: #22c55e;
+      }
+      .status.rejected {
+        background: #ef4444;
+      }
+      .status.released {
+        background: #16a34a;
+      }
+
+      .proof-link {
+        display: inline-block;
+        margin-top: 8px;
+        font-size: 14px;
+        color: #2563eb;
+        font-weight: 500;
+      }
+
+      form {
+        background: #fff;
+        border: 1px dashed #cbd5e1;
+        padding: 18px;
+        border-radius: 12px;
+        margin-top: 15px;
+        text-align: center;
+      }
+
+      input[type="file"] {
+        display: block;
+        margin: 10px auto;
+        font-size: 14px;
+      }
+
+      .btn {
+        padding: 10px 18px;
+        background: linear-gradient(90deg, #3b82f6, #6366f1);
+        border: none;
+        border-radius: 8px;
+        color: #fff;
+        font-size: 15px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        margin-top: 8px;
+      }
+
+      .btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
+      }
+
+      footer {
+        background: #ffffff;
+        border-top: 1px solid #e2e8f0;
+        text-align: center;
+        padding: 25px;
+        color: #64748b;
+        font-size: 14px;
+      }
+    </style>
+  </head>
+
+  <body>
+    <header>
+      <h1>Research Ownership DApp</h1>
+      <nav>
+        <a href="/">Home</a>
+        <a href="/student/dashboard">Dashboard</a>
+        <a href="/logout">Logout</a>
+      </nav>
+    </header>
+
+    <div class="container">
+      <h2>📊 Project Milestones</h2>
+      <p class="sub">
+        Project: <strong><%= project.title %></strong> | Student: <%=
+        project.owner?.name || "Unknown" %>
+      </p>
+
+      <% if (milestones.length === 0) { %>
+      <p style="text-align: center; color: #64748b">
+        No milestones created yet.
+      </p>
+      <% } else { %> <% milestones.forEach((m, i) => { %>
+      <div class="milestone" data-amount="<%= m.amount %>">
+        <h3>Milestone <%= i + 1 %></h3>
+        <p><strong>Description:</strong> <%= m.description || "N/A" %></p>
+        <p><strong>Work Percentage:</strong> <%= m.percentage || 0 %>%</p>
+        <p>
+          <strong>Amount:</strong>
+          <span class="inr-amount">₹...</span>
+          (<span class="eth-amount"><%= m.amount || "0" %></span> ETH)
+        </p>
+        <p>
+          <strong>Status:</strong>
+          <span class="status <%= m.status %>">
+            <%= m.status ? m.status.charAt(0).toUpperCase() + m.status.slice(1)
+            : (m.released ? "Released" : "Pending") %>
+          </span>
+        </p>
+
+        <% if (m.proof) { %>
+        <a
+          href="https://ipfs.io/ipfs/<%= m.proof %>"
+          target="_blank"
+          class="proof-link"
+          >📎 View Submitted Proof</a
+        >
+        <% } %> <% if (!m.proof && (m.status === "pending" || !m.status)) { %>
+        <form
+          action="/projects/<%= project._id %>/milestone/<%= i %>/upload"
+          method="POST"
+          enctype="multipart/form-data"
+        >
+          <label>Upload Proof (doc, image, video)</label>
+          <input type="file" name="file" required />
+          <button type="submit" class="btn">📤 Submit Proof</button>
+        </form>
+        <% } else if (m.status === "submitted") { %>
+        <p><em>📤 Proof submitted. Awaiting university review...</em></p>
+        <% } else if (m.status === "approved") { %>
+        <p><em>✅ Approved — funds released to wallet.</em></p>
+        <% } else if (m.status === "rejected") { %>
+        <p><em>❌ Rejected. Please re-upload a valid proof.</em></p>
+        <form
+          action="/projects/<%= project._id %>/milestone/<%= i %>/upload"
+          method="POST"
+          enctype="multipart/form-data"
+        >
+          <label>Re-upload Proof:</label>
+          <input type="file" name="file" required />
+          <button type="submit" class="btn">🔄 Re-submit Proof</button>
+        </form>
+        <% } else if (m.released) { %>
+        <p><em>💰 Funds released successfully.</em></p>
+        <% } %>
+      </div>
+      <% }) %> <% } %>
+    </div>
+
+    <footer>
+      &copy; 2025 Research Ownership DApp | Empowering Transparent Innovation
+    </footer>
+
+    <script>
+      async function updateInrValues() {
+        try {
+          const res = await fetch(
+            "https://api.coingecko.com/api/v3/simple/price?ids=ethereum&vs_currencies=inr"
+          );
+          const data = await res.json();
+          const rate = data.ethereum.inr;
+
+          document.querySelectorAll(".milestone").forEach((m) => {
+            const eth = parseFloat(m.dataset.amount || "0");
+            const inr = eth * rate;
+            const inrEl = m.querySelector(".inr-amount");
+            if (inrEl) {
+              inrEl.textContent =
+                "₹" +
+                inr.toLocaleString("en-IN", {
+                  maximumFractionDigits: 2,
+                });
+            }
+          });
+        } catch (err) {
+          console.warn("⚠️ Could not fetch ETH→INR rate:", err);
+        }
+      }
+
+      updateInrValues();
+      setInterval(updateInrValues, 30000); // refresh every 30s
+    </script>
+  </body>
+</html>
